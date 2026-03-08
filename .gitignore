@@ -1,0 +1,33 @@
+# Python
+ai-analysis-service/venv/
+ai-analysis-service/__pycache__/
+ai-analysis-service/src/**/__pycache__/
+ai-analysis-service/.env
+**/*.pyc
+**/*.pyo
+
+# Java / Maven
+backend-video-service/target/
+backend-feedback-service/target/
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Node / Angular
+frontend-angular/node_modules/
+frontend-angular/dist/
+frontend-angular/.angular/
+
+# Docker
+docker/postgres-data/
+
+# Storage (local video uploads)
+backend-video-service/storage/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.DS_Store
+
+# Secrets
+**/*.env
+!ai-analysis-service/.env.example

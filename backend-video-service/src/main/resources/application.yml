@@ -1,0 +1,55 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: video-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/badminton_db
+    username: badminton_user
+    password: badminton_pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      retries: 3
+
+azure:
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING:}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME:videos}
+
+app:
+  video-storage-path: ${VIDEO_STORAGE_PATH:./storage/videos}
+  video-storage-backend: ${APP_VIDEO_STORAGE_BACKEND:local}
+  kafka:
+    topic:
+      video-uploaded: video-uploaded
+  allowed-video-formats:
+    - video/mp4
+    - video/quicktime
+  max-video-duration-seconds: 60
+
+logging:
+  level:
+    com.badminton: DEBUG
+    org.springframework.kafka: INFO
