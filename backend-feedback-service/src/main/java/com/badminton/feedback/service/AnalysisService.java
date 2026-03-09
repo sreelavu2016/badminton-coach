@@ -47,6 +47,9 @@ public class AnalysisService {
                             .severity(FeedbackSeverity.valueOf(req.getSeverity().toUpperCase()))
                             .message(req.getMessage())
                             .detail(req.getDetail())
+                            .faultyFrameUrl(req.getFaultyFrameUrl())
+                            .idealFrameUrl(req.getIdealFrameUrl())
+                            .frameTimestampSec(req.getFrameTimestampSec())
                             .build())
                     .collect(Collectors.toList());
             result.getFeedbackItems().addAll(items);
@@ -71,6 +74,9 @@ public class AnalysisService {
                         .severity(fi.getSeverity().name())
                         .message(fi.getMessage())
                         .detail(fi.getDetail())
+                        .faultyFrameUrl(fi.getFaultyFrameUrl())
+                        .idealFrameUrl(fi.getIdealFrameUrl())
+                        .frameTimestampSec(fi.getFrameTimestampSec())
                         .build())
                 .collect(Collectors.toList());
 

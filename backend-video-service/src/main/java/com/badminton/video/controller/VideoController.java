@@ -1,10 +1,12 @@
 package com.badminton.video.controller;
 
+import com.badminton.video.config.StorageConfig;
 import com.badminton.video.dto.VideoUploadResponse;
 import com.badminton.video.service.VideoService;
 import com.badminton.video.service.VideoStorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 @RestController
@@ -27,6 +32,7 @@ public class VideoController {
 
     private final VideoService videoService;
     private final VideoStorageService videoStorageService;
+    private final StorageConfig storageConfig;
 
     /**
      * Upload a badminton practice video.
@@ -88,6 +94,33 @@ public class VideoController {
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    /**
+     * Serve a posture frame image (faulty or ideal) saved by the AI service.
+     * Path: GET /api/videos/{videoId}/frames/{filename}
+     * Files live at: <storagePath>/../frames/{videoId}/{filename}
+     */
+    @GetMapping("/{videoId}/frames/{filename}")
+    public ResponseEntity<Resource> getFrame(
+            @PathVariable String videoId,
+            @PathVariable String filename) {
+
+        Path framesRoot = Paths.get(storageConfig.getStoragePath())
+                .getParent()
+                .resolve("frames");
+        Path filePath = framesRoot.resolve(videoId).resolve(filename);
+
+        if (!Files.exists(filePath)) {
+            log.warn("Frame not found: {}", filePath);
+            return ResponseEntity.notFound().build();
+        }
+
+        Resource resource = new FileSystemResource(filePath);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(resource);
     }
 
     /**

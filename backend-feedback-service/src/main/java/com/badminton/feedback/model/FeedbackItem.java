@@ -33,4 +33,13 @@ public class FeedbackItem {
 
     @Column(name = "detail")
     private String detail;
+
+    @Column(name = "faulty_frame_url", length = 1024)
+    private String faultyFrameUrl;
+
+    @Column(name = "ideal_frame_url", length = 1024)
+    private String idealFrameUrl;
+
+    @Column(name = "frame_timestamp_sec")
+    private Double frameTimestampSec;
 }

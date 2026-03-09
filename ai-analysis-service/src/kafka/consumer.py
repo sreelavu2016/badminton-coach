@@ -25,10 +25,13 @@ def build_feedback_payload(result) -> dict:
         "metricsJson": result.metrics_json,
         "feedbackItems": [
             {
-                "category": fi.category,
-                "severity": fi.severity,
-                "message": fi.message,
-                "detail": fi.detail,
+                "category":        fi.category,
+                "severity":        fi.severity,
+                "message":         fi.message,
+                "detail":          fi.detail,
+                "faultyFrameUrl":  fi.faulty_frame_url,
+                "idealFrameUrl":   fi.ideal_frame_url,
+                "frameTimestampSec": fi.frame_timestamp_sec,
             }
             for fi in result.feedback_items
         ],
@@ -135,11 +138,16 @@ def run_consumer():
 
         try:
             video_path = resolve_video_path(video_url)
-            # Track temp files created by Azure download for cleanup
             if settings.video_storage_backend.lower() == "azure":
                 tmp_path = video_path
 
-            result = analyzer.analyze(video_path, video_id, user_id)
+            # Resolve frames storage path (sibling of video storage dir)
+            frames_path = Path(settings.video_storage_path).resolve().parent / "frames"
+
+            result = analyzer.analyze(
+                video_path, video_id, user_id,
+                frames_storage_path=frames_path,
+            )
             payload = build_feedback_payload(result)
             post_results_to_feedback_service(payload)
             consumer.commit()

@@ -10,4 +10,7 @@ public class FeedbackItemResponse {
     private String severity;
     private String message;
     private String detail;
+    private String faultyFrameUrl;
+    private String idealFrameUrl;
+    private Double frameTimestampSec;
 }

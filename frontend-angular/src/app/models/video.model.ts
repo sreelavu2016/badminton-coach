@@ -14,6 +14,9 @@ export interface FeedbackItem {
   severity: 'INFO' | 'WARNING' | 'CRITICAL';
   message: string;
   detail: string;
+  faultyFrameUrl?: string;
+  idealFrameUrl?: string;
+  frameTimestampSec?: number;
 }
 
 export interface AnalysisResult {
